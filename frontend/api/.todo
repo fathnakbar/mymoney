@@ -1,0 +1,28 @@
+- users
+    : id
+    : username
+    : email
+    : phonenumber
+
+- wallets
+    : id  
+    : name
+    : type
+    : created_at
+    : updated_at
+    : user_id > users (id)
+
+-transactions
+    : wallet_id > wallets (id)
+    : currency
+    : amounts
+    : author
+    : category
+    : description
+    : date
+    : created_at
+    : updated_at
+
+- category
+    : id
+    : name
