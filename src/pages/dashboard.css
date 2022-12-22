@@ -1,0 +1,47 @@
+body{
+    margin: 0;
+    height: 100vh;
+    width: 100%;
+    background-color: #F3F3F3;
+    display: flex;
+}
+li{
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+li span{
+    margin:  10px;
+}
+
+ul{
+    width: 100%;
+    height: 100%;
+}
+
+.navbar{
+    background-color:white;
+    width: 18%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+}
+.line div{
+    background-color: #F3F3F3;
+    height: 2px;
+    width: 85%;
+}
+
+.line{
+    display: flex;
+    justify-content: center;
+}
+.space-y-96{
+    margin: 20px;
+}
+.logout{
+    display: flex;
+   margin-top: 150%;
+}
