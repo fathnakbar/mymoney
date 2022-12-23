@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\api\AuthenticatedSessionAPIController;
 use App\Http\Controllers\api\RegisteredUserAPIController;
+use App\Http\Controllers\api\WalletController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,3 +24,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('register', [RegisteredUserAPIController::class, 'store']);
 
 Route::post('login', [AuthenticatedSessionAPIController::class, 'store']);
+
+Route::resource('wallet', WalletController::class);
