@@ -22,7 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('register', [RegisteredUserAPIController::class, 'store']);
-
 Route::post('login', [AuthenticatedSessionAPIController::class, 'store']);
+
+Route::post('check_token', [AuthenticatedSessionAPIController::class, 'check_token']);
 
 Route::resource('wallet', WalletController::class);

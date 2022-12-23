@@ -1,23 +1,75 @@
-class Sessions {
+import { get } from "http";
+import env from "./env";
+
+const base = env.host.href;
+let body = "data";
+
+export class App {
   user_session;
-  constructor(email, password) {
-    
-    this.user_session = token_api ? fetch("login", {
-      method: "post",
-      body: JSON.stringify({ email, password }),
+
+  static register(email, password){
+    this.user_session = fetch(new URL("/api/register", base).href, {
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        method: 'post',
+        [body]: JSON.stringify({email, password})
     })
-      .catch((rej) => {})
-      .then((res) => res.json())
-      .then(res => {
-        localStorage.setItem('token_api', res.token)
+    .then(res => res.json())
+    .then(res => {
+        localStorage.setItem('token_api', JSON.stringify(res));
         return res
-      }) : JSON.parse(localStorage.token_api);
+      })
+      .catch((rej) => {console.log(rej.response.data, rej)})
+  }
+
+  authentication(email, password){
+    if ((Boolean(email) && Boolean(password)) || localStorage.getItem("token_api")) {
+        // DO something
+        this.user_session = !localStorage.token_api ? fetch(new URL('/api/login', base).href, {
+          headers: {
+            'Content-Type': `application/json`
+          },  
+          method: "post",
+          [body]: JSON.stringify({ email, password }),
+        })
+          .then((res) => res.json())
+          .then(res => {
+            localStorage.setItem('token_api', JSON.stringify(res));
+            return res
+          })
+          .catch((rej) => {console.log(rej.response.data, rej)})
+           : new Promise(res => res(JSON.parse(localStorage.token_api)))
+            //   token suppose to be checked on future request.
+           .then(async session => {
+                const res = await fetch(new URL("/api/check_token", base).href, {
+                   method: 'post',
+                   headers: {
+                       'Authorization': `Bearer ${session.token}`
+                   }
+               });
+               const json = await res.json();
+
+               if (json.data) {
+                return session;
+               } else {
+                localStorage.removeItem("token_api");
+                this.authentication(email, password)
+               }
+
+               
+           });
+    }
+  }
+
+  constructor(email, password) {
+   this.authentication(email, password);
   }
 
   query_fetch(endpoint, callback){
     return {
         get(query){
-            this.user_session.then(session => {
+            return Boolean(this.user_session) && this.user_session.then(session => {
                 const parsed = new URLSearchParams();
                 for (const params in query) {
                     if (Object.hasOwnProperty.call(query, params)) {
@@ -25,25 +77,36 @@ class Sessions {
                         parsed.set(params, element)
                     }
                 }
-                return fetch(`/api/${endpoint}?${parsed.toString()}`, {
-                    headers: new Headers({
-                        'Authorization': `Bearer`
-                    })
+                return fetch(new URL(`/api/${endpoint}?${parsed.toString()}`, base).href, {
+                    headers: {
+                        'Authorization': `Bearer ${session.token}`
+                    }
                 }).catch(rej => false).then(res => res.json())
             })
         },
 
+        getAll(){
+
+        },
+
+        update(){
+
+        },
+
         post(query){
-            this.user_session.then(session => {
-                fetch(`/api/${endpoint}`, {
+            return Boolean(this.user_session) && this.user_session.then(session => {
+                fetch(new URL(`/api/${endpoint}`, base).href, {
                     method: 'POST',
-                    body: JSON.stringify(query)
+                    headers: {
+                        'Authorization': `Bearer ${session.token}`
+                    },
+                    [body]: JSON.stringify(query)
                 })
             })
         },
 
         delete(){
-            this.user_session.then(session => {
+            return Boolean(this.user_session) && this.user_session.then(session => {
         
             })
         }
@@ -51,7 +114,7 @@ class Sessions {
   }
 
   users() {
-    
+    return this.query_fetch("user")
   }
 
   wallets() {}
@@ -60,5 +123,3 @@ class Sessions {
 
   transactions() {}
 }
-
-m
