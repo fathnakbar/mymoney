@@ -34,7 +34,8 @@ class AuthenticatedSessionAPIController extends Controller
 
         if (!Auth::attempt($request->only("email", "password"))) {
             return response()->json([
-                'message' => 'Invalid login details'
+                'message' => 'Invalid login details',
+                'request' => $request
             ], 401);
         }
         
@@ -42,7 +43,7 @@ class AuthenticatedSessionAPIController extends Controller
 
         return response()->json([
             'data' => $user,
-            'token' => $user->createToken('auth_token')->plainTextToken,
+            'token' => $user->createToken('auth_token')->plainTextToken
         ], 200);
 
     }
@@ -62,5 +63,12 @@ class AuthenticatedSessionAPIController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function check_token(Request $request){
+        $user = auth('sanctum')->check();
+        return [
+            "data" => $user
+        ];
     }
 }
