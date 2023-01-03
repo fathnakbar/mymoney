@@ -5,7 +5,7 @@ const base = env.host.href;
 let body = "data";
 
 export class App {
-  user_session;
+  static user_session;
 
   static register(email, password){
     this.user_session = fetch(new URL("/api/register", base).href, {
@@ -24,8 +24,8 @@ export class App {
   }
 
   authentication(email, password){
+    
     if ((Boolean(email) && Boolean(password)) || localStorage.getItem("token_api")) {
-        // DO something
         this.user_session = !localStorage.token_api ? fetch(new URL('/api/login', base).href, {
           headers: {
             'Content-Type': `application/json`
@@ -38,7 +38,7 @@ export class App {
             localStorage.setItem('token_api', JSON.stringify(res));
             return res
           })
-          .catch((rej) => {console.log(rej.response.data, rej)})
+          .catch((rej) => {console.log(rej.response?.data, rej)})
            : new Promise(res => res(JSON.parse(localStorage.token_api)))
             //   token suppose to be checked on future request.
            .then(async session => {
@@ -50,7 +50,7 @@ export class App {
                });
                const json = await res.json();
 
-               if (json.data) {
+               if (json?.data) {
                 return session;
                } else {
                 localStorage.removeItem("token_api");

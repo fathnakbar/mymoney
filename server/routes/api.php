@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\api\AuthenticatedSessionAPIController;
 use App\Http\Controllers\api\RegisteredUserAPIController;
+use App\Http\Controllers\api\TransactionController;
+use App\Http\Controllers\api\WalletController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,3 +27,9 @@ Route::post('register', [RegisteredUserAPIController::class, 'store']);
 Route::post('login', [AuthenticatedSessionAPIController::class, 'store']);
 
 Route::post('check_token', [AuthenticatedSessionAPIController::class, 'check_token']);
+
+Route::resource('transactions', TransactionController::class);
+
+Route::resource('wallets', WalletController::class);
+
+Route::resource('user', WalletController::class);

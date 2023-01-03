@@ -16,7 +16,7 @@
     : wallet_id > wallets (id)
     : currency
     : amounts
-    : author
+    : author > users (id)
     : category
     : description
     : date

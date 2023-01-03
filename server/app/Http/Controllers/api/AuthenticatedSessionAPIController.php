@@ -66,7 +66,7 @@ class AuthenticatedSessionAPIController extends Controller
     }
 
     public function check_token(Request $request){
-        $user = auth('sanctum')->check();
+        $user = auth('sanctum')->user();
         return [
             "data" => $user
         ];
